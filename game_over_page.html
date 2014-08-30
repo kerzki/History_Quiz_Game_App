@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>QUIZ MAIN game_over.html</title>
+	
+	<!-- boostrap modal START-->
+	<link href="css/bootstrap.css" rel="stylesheet" />
+	<link href="css/prettify.css" rel="stylesheet" />
+	
+	<link href="css/bootstrap-responsive.css" rel="stylesheet" />
+	<link href="css/bootstrap-modal.css" rel="stylesheet" />
+	<!-- boostrap modal END-->
+	
+	
+	<script type="text/javascript" src="js/jq.js"></script><!-- jquery script -->
+	<link rel="stylesheet" href="css/style-custom.css"><!-- custom style -->
+</head>
+<body>
+			
+	<div class="modal-header">
+		<!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+	<label class="Login">GameStatus Modal</label>
+	</div>
+	<div class="modal-body">
+		<center>
+			
+			
+			<label>Your Score:</label><input type="text" name="" id="txt-game-over-score" class="YourScore" disabled/><br />
+			<label>Your Previous Score:</label><input type="text" name="" id="txt-previous-score" class="YourPreviousScore" disabled/><br />
+			<h5 id="game_over_page_msg"></h5>
+			<input id="btn-play-again" type="button" value="Play Again" class="btn btn-lg btn-warning col-lg-12" /><br />
+			<input id="btn-post-score-online" type="button" value="Post Score Online" class="btn btn-lg btn-warning"/><br />
+			<input type="button" value="Main Menu" class="btn-main-menu btn-lg btn-warning col-lg-12"/><br />
+		
+		</center>
+	</div>
+	<div class="modal-footer">
+		<!--<button type="button" data-dismiss="modal" class="btn">Close</button>
+		<button type="button" class="btn btn-primary">Ok</button>-->
+	</div>
+	
+	<div id="stack2" class="modal hide fade" tabindex="-1" data-focus-on="input:first">
+		 <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<label class="Login">Login Page</label>
+		</div>
+		
+		<div class="modal-body">
+			
+				<form id="loginform" action="javascript:verifyLoginfirst()"><br />
+			<center>
+					<form id="loginform" action="javascript:verifyLoginfirst()">
+						<div id="login_popuptext"><label class="font">Account Area</label></div>
+						<input type="text" name="name" class="form-control" id="login_username" placeholder="Username"><br />
+						<input type="password" class="form-control" name="pw" id="login_password" placeholder="Password"><br />
+						<input type="submit" value="Log In" id="login_btnlogin" class="btn btn-lg btn-warning col-lg-12" />		
+					</form>
+			</center>
+		</div>
+		<div class="modal-footer">
+		
+		</div>
+	</div>
+	
+	
+	
+	
+	
+	
+	<script type="text/javascript" src="js/jq-custom.js"></script><!--custom jq script for for functions and variables-->	
+	<script type="text/javascript">
+	
+		displayGameOverScoreAndPreviousScore();//display score on --game_over_page.html
+	
+	</script>
+	<script type="text/javascript">
+	var lform = $("#loginform");
+	function verifyLoginfirst(){
+		if($( "#login_username" ).val() == "" || $( "#login_password" ).val() == "")
+		{
+			$("#login_popuptext").html("<label class='font'>Please Enter Username & Password</label>");
+		return;
+		}
+			$.getJSON("quiz_online_files/login.php?callback=?",lform.serialize(), function(data)
+			{
+			
+				if (data.allow == "yes")
+				{
+					
+					$("#login_popuptext").html("<label class='font'>Successfully Login</label>");
+					localStorage.setItem("username", data.username);
+					localStorage.setItem("user_id",data.user_id);
+					location.href="index.html";	
+					
+					
+				}
+				else if(data.allow == "no")
+				{
+					$("#login_popuptext").html("<h6>The account you've entered is not registered.</h6>");
+
+				}
+				else if(data.allow == "maybe")
+				{
+					$("#login_popuptext").html("<h6>Incorrect password. Please Try Again</h6>");
+
+				}else{
+					$("#login_popuptext").html("<h6>Problem with your login, Please check internet connection or try again later.</h6>");
+				}
+			}).fail(function(data){
+				
+				$("#login_popuptext").html("<h6>Problem with your login, Please check internet connection or try again later.</h6>");
+				
+				
+			});
+		}
+	</script>
+	
+	<script>
+	var rform = $("#regForm");
+	function verifyRegfirst(){
+		if($( "#username" ).val() == "" || $( "#upassword" ).val() == "" || $( "#uemail" ).val() == "" || $( "#ucpassword" ).val() == "")
+		{
+			$("#popuptext").html("<h6>Please Complete the Form</h6>");
+			
+		}else if($("#upassword").val() != $("#ucpassword").val()){
+		
+			$("#popuptext").html("<h6>Password did not match</h6>");
+			
+		}else{
+			$.getJSON("quiz_online_files/register_check.php?callback=?",rform.serialize(), function(data)
+			{
+			
+				if (data.eexists == "exists")
+				{
+					$("#popuptext").html("<h6>The email address is already use.</h6>");
+				}
+				else if(data.uexists == "exists")
+				{
+					
+					$("#popuptext").html("<h6>The username is already use</h6>");
+
+				}
+				else
+				{
+					$.getJSON("quiz_online_files/register_user.php?callback=?",rform.serialize(), function(data)
+					{
+						$("#username").val("");
+						$("#uemail").val("");
+						$("#upassword").val("");
+						$("#ucpassword").val("");
+						//modal regcomplete
+						$("#popuptext").html("<h3>Registration Complete!</h3>");
+						location.href = "index.html";
+						
+						//check if login
+						var a = window.localStorage.getItem("username");
+						if(a == "null" || a == "" || a == "undefined"){
+							location.href = "index.html";
+							$("#regErrorMsg").html("<h6>Registration Success</h6>");
+						}else{
+							$("#regErrorMsg").html("<h3>Registration failed</h3>");
+							//location.href = "index.html";
+						}
+						
+					}).fail(function(){
+					
+						$("#popuptext").html("<h6>Registration Failed!</h6>");
+					});
+
+				}
+			}).fail(function(data){
+				
+				$("#popuptext").html("<h6>Problem with your login, Please check internet connection or try again later.</h6>");
+				
+				
+			});
+		}
+	}
+		
+	</script>
+	
+</body>
+</html>

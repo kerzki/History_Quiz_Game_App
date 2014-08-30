@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title></title>
+	
+	<script type="text/javascript" src="js/jq.js"></script>
+	
+	
+	</head>
+	<body>
+	<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<label class="Login">Registration Page</label>
+		</div>
+		<div class="modal-body">
+			<center>
+					<div id="popuptext"></div>
+					<form role="form" id="regForm" action="javascript:verifyRegfirst()">
+					<label class="font">Please fill up the following:</label>
+					<h2 id="regErrorMsg"></h2>
+					<input type="text" name="username" id="username" placeholder="Username" required /><br />
+					<input type="email" name="email" id="uemail" placeholder="Example@yahoo.com" required /><br />
+					<input type="password"  name="password" id="upassword" placeholder="Password"/><br />
+					<input type="password"  id="ucpassword" placeholder="Confirm Password"/><br />
+					<input type="submit" value="Register" id="registerUser" class="btn btn-lg btn-warning"/>
+				</form>
+			</center>
+		</div>
+		<div class="modal-footer">
+			
+		</div>
+	</body>
+	
+	<script>
+	var rform = $("#regForm");
+	function verifyRegfirst(){
+		if($( "#username" ).val() == "" || $( "#upassword" ).val() == "" || $( "#uemail" ).val() == "" || $( "#ucpassword" ).val() == "")
+		{
+			$("#popuptext").html("<h2>Please Complete the Form</h2>");
+			
+		}else if($("#upassword").val() != $("#ucpassword").val()){
+		
+			$("#popuptext").html("<h2>Password did not match</h2>");
+			
+		}else{
+			$.getJSON("quiz_online_files/register_check.php?callback=?",rform.serialize(), function(data)
+			{
+			
+				if (data.eexists == "exists")
+				{
+					$("#popuptext").html("<h6>The email address is already use.</h6>");
+				}
+				else if(data.uexists == "exists")
+				{
+					
+					$("#popuptext").html("<h6>The username is already use</h6>");
+
+				}
+				else
+				{
+					$.getJSON("quiz_online_files/register_user.php?callback=?",rform.serialize(), function(data)
+					{
+						$("#username").val("");
+						$("#uemail").val("");
+						$("#upassword").val("");
+						$("#ucpassword").val("");
+						//modal regcomplete
+						$("#popuptext").html("<h6>Registration Complete!</h6>");
+						//check if login
+						var a = window.localStorage.getItem("username");
+						if(a == "null" || a == "" || a == "undefined"){
+							location.href = "login_page.html";
+							
+						}else{
+							$("#popuptext").html("<h2>Registration Complete!</h2>");
+							location.href = "index.html";
+							
+						}
+						
+					}).fail(function(){
+					
+						$("#popuptext").html("<h6>Registration Failed!</h6>");
+					});
+
+				}
+			}).fail(function(data){
+				
+				$("#popuptext").html("<h6>Problem with your login, Please check internet connection or try again later.</h6>");
+				
+				
+			});
+		}
+	}
+		
+	</script>
+<script type="text/javascript" src="js/jq-custom.js"></script>
+
+</html>

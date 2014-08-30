@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>QUIZ MAIN leaderboard_page.html</title>
+	<script type="text/javascript" src="js/jq.js"></script><!-- jquery script -->
+	<link rel="stylesheet" href="css/style-custom.css"></link><!-- custom style -->
+</head>
+<body>
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<label class="Login">Ranking Modal</label>
+	</div>
+	<div class="modal-body">
+		<center>
+			<label class="font">Leaderboard</label>
+			<table id="leaderboardTable" border="1">
+				<thead>
+					<tr>
+						<th colspan="16" class="RowLead">High Scores</th>
+					</tr>
+					<tr>
+						<th class="RowLead">Rank</th>
+						<th class="RowLead">Username</th>
+						<th class="RowLead">Score</th>
+					</tr>
+					
+				</thead>
+			</table>
+			
+			<!--<input class="btn-main-menu" type="button" value="MAIN MENU" />-->
+		</center>
+	</div>
+	<div class="modal-footer">
+	</div>
+	
+	<script type="text/javascript" src="js/jq-custom.js"></script><!--custom jq script for for functions and variables-->
+	<script type="text/javascript">
+	
+		getLeaderboard(); //call ajax leaderboard; --leaderboard_page.html
+	
+	</script>
+</body>
+</html>

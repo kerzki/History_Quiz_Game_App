@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>Quiz</title>
+	<script type="text/javascript" src="js/jq.js"></script><!-- jquery script -->
+	<link rel="stylesheet" href="css/style-custom.css"><!-- custom style -->
+	
+</head>
+<body>
+	<div class="modal-header" >
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<label class="Login">Login Modal</label>
+	</div>
+	<div class="modal-body">
+		<center>
+			<form id="loginform" action="javascript:verifyLoginfirst()">
+				<div id="login_popuptext"><label class="font">Account Area</label></div><br />
+				<input type="text" name="name" class="form-control" id="login_username" placeholder="Username"><br />
+				<input type="password" class="form-control" name="pw" id="login_password" placeholder="Password"><br />
+				<input type="submit" value="Log In" id="login_btnlogin" class="btn btn-lg btn-warning col-lg-12" />											
+			</form>
+				<label for="">Need Account?</label>
+				<button class="btn btn-lg btn-warning" data-toggle="modal" href="#stack2">Register</button>
+		</center>
+	</div>
+	<div class="modal-footer">
+		
+	</div>
+	
+	<div id="stack2" class="modal hide fade" tabindex="-1" data-focus-on="input:first">
+	  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<label class="Login">Registration Page</label>
+		</div>
+		<div class="modal-body">
+			<center>
+					<div id="popuptext"></div>
+					<form role="form" id="regForm" action="javascript:verifyRegfirst()">
+					<label class="font">Please fill up the following:</label>
+					<h2 id="regErrorMsg"></h2>
+					<input type="text" name="username" id="username" placeholder="Username" required /><br />
+					<input type="email" name="email" id="uemail" placeholder="Example@yahoo.com" required /><br />
+					<input type="password"  name="password" id="upassword" placeholder="Password"/><br />
+					<input type="password"  id="ucpassword" placeholder="Confirm Password"/><br />
+					<input type="submit" value="Register" id="registerUser" class="btn btn-lg btn-warning"/>
+				</form>
+				<!--<input  class="btn-main-menu" type="button" value="Main Menu" /> -->
+			</center>
+		</div>
+		<div class="modal-footer">
+			<!--<button type="button" data-dismiss="modal" class="btn">Close</button>
+			<button type="button" class="btn btn-primary">Ok</button>-->
+		</div>
+	</div>
+	<script type="text/javascript">
+	var lform = $("#loginform");
+	function verifyLoginfirst(){
+		if($( "#login_username" ).val() == "" || $( "#login_password" ).val() == "")
+		{
+			$("#login_popuptext").html("<label class='font'>Please Enter Username & Password</label>");
+		return;
+		}
+			$.getJSON("quiz_online_files/login.php?callback=?",lform.serialize(), function(data)
+			{
+			
+				if (data.allow == "yes")
+				{
+					
+					$("#login_popuptext").html("<label class='font'>Successfully Login</label>");
+					localStorage.setItem("username", data.username);
+					localStorage.setItem("user_id",data.user_id);
+					location.href="index.html";	
+					
+					
+				}
+				else if(data.allow == "no")
+				{
+					$("#login_popuptext").html("<h6>The account you've entered is not registered.</h6>");
+
+				}
+				else if(data.allow == "maybe")
+				{
+					$("#login_popuptext").html("<h6>Incorrect password. Please Try Again</h6>");
+
+				}else{
+					$("#login_popuptext").html("<h6>Problem with your login, Please check internet connection or try again later.</h6>");
+				}
+			}).fail(function(data){
+				
+				$("#login_popuptext").html("<h6>Problem with your login, Please check internet connection or try again later.</h6>");
+				
+				
+			});
+		}
+	</script>
+	
+	<script>
+	var rform = $("#regForm");
+	function verifyRegfirst(){
+		if($( "#username" ).val() == "" || $( "#upassword" ).val() == "" || $( "#uemail" ).val() == "" || $( "#ucpassword" ).val() == "")
+		{
+			$("#popuptext").html("<h6>Please Complete the Form</h6>");
+			
+		}else if($("#upassword").val() != $("#ucpassword").val()){
+		
+			$("#popuptext").html("<h6>Password did not match</h6>");
+			
+		}else{
+			$.getJSON("quiz_online_files/register_check.php?callback=?",rform.serialize(), function(data)
+			{
+			
+				if (data.eexists == "exists")
+				{
+					$("#popuptext").html("<h6>The email address is already use.</h6>");
+				}
+				else if(data.uexists == "exists")
+				{
+					
+					$("#popuptext").html("<h6>The username is already use</h6>");
+
+				}
+				else
+				{
+					$.getJSON("quiz_online_files/register_user.php?callback=?",rform.serialize(), function(data)
+					{
+						$("#username").val("");
+						$("#uemail").val("");
+						$("#upassword").val("");
+						$("#ucpassword").val("");
+						//modal regcomplete
+						$("#popuptext").html("<h3>Registration Complete!</h3>");
+						location.href = "index.html";
+						
+						//check if login
+						var a = window.localStorage.getItem("username");
+						if(a == "null" || a == "" || a == "undefined"){
+							location.href = "index.html";
+							$("#regErrorMsg").html("<h6>Registration Success</h6>");
+						}else{
+							$("#regErrorMsg").html("<h3>Registration failed</h3>");
+							//location.href = "index.html";
+						}
+						
+					}).fail(function(){
+					
+						$("#popuptext").html("<h6>Registration Failed!</h6>");
+					});
+
+				}
+			}).fail(function(data){
+				
+				$("#popuptext").html("<h6>Problem with your login, Please check internet connection or try again later.</h6>");
+				
+				
+			});
+		}
+	}
+		
+	</script>
+	<script type="text/javascript" src="js/jq-custom.js"></script><!--custom jq script for for functions and variables-->
+</body>
+</html>

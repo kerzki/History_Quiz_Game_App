@@ -1,0 +1,15 @@
+{
+  "version": "0.1",
+  "name": "Quiz_v8.1",
+  "description": "Demo app - Change to a formal description",
+  "launch_path": "/index.html",
+  "icons": {
+    "60": "/icons/60.png",
+    "128": "/icons/128.png"
+  },
+  "developer": {
+    "name": "Pagkaraniwang Developer",
+    "url": "http://www.mozillaph.org"
+  },
+  "default_locale": "en"
+}
